@@ -34,6 +34,14 @@ const MUITable = () => {
         })
     },[]);
 
+    if(loading) {
+      return(
+        <div>
+          <CircularProgress />
+        </div>
+      )
+    }
+
   return (
     <div>
       <TableContainer>
