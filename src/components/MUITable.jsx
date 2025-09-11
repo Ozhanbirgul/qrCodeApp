@@ -23,7 +23,9 @@ const MUITable = () => {
     useEffect(() => {
       axios.get("https://api.ikkutusu.com.tr/api/QrCode")
         .then((response) => {
-          setRows(response.data)
+          //console.log("Api test", response.data)
+          //setRows(response.data)
+          setRows(response.data.result)
         })
         .catch((error) => {
           console.log("veri çekme hatasi",error)
@@ -37,18 +39,14 @@ const MUITable = () => {
             <TableHead>
                 <TableRow>
                     <TableCell>ID</TableCell>
-                    <TableCell>FIRSTNAME</TableCell>
-                    <TableCell>LASTNAME</TableCell>
-                    <TableCell>AGE</TableCell>
+                    <TableCell>İÇERİK</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
                 {rows.map((row) => (
                     <TableRow key={row.id}>
                         <TableCell>{row.id}</TableCell>
-                        <TableCell>{row.firstName}</TableCell>
-                        <TableCell>{row.lastName}</TableCell>
-                        <TableCell>{row.age}</TableCell>
+                        <TableCell>{row.description}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>
