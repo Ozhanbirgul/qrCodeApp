@@ -32,7 +32,7 @@ const MUITable = () => {
           setLoading(false);
         })
         .catch((error) => {
-          console.log("veri çekme hatasi",error)
+          alert("veri çekme hatasi",error.message)
           setLoading(false)
         })
       }, 2000)
