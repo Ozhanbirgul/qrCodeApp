@@ -23,15 +23,19 @@ const MUITable = () => {
     const [loading, setLoading] = useState(true); // loading durumunu tutalım
 
     useEffect(() => {
-      axios.get("https://api.ikkutusu.com.tr/api/QrCode")
+      setTimeout(() => {
+        axios.get("https://api.ikkutusu.com.tr/api/QrCode")
         .then((response) => {
           //console.log("Api test", response.data)
           //setRows(response.data)
           setRows(response.data.result)
+          setLoading(false);
         })
         .catch((error) => {
           console.log("veri çekme hatasi",error)
+          setLoading(false)
         })
+      }, 2000)
     },[]);
 
     if(loading) {
