@@ -6,14 +6,17 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { useState } from 'react';
 
 const MUITable = () => {
 
-    const rows = [
+    /*const rows = [
         {id : 1, firstName: "Birgül", lastName : "Demirden", age : 26},
         {id : 2, firstName: "Birgül", lastName : "Demirden", age : 26},
         {id :3, firstName: "Birgül", lastName : "Demirden", age : 26},
-    ]
+    ]*/
+
+      const [rows, setRows] = useState([]);
   return (
     <div>
       <TableContainer>
