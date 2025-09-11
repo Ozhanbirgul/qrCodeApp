@@ -8,6 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import { useState } from 'react';
+import { useEffect } from 'react';
 
 const MUITable = () => {
 
@@ -17,7 +18,18 @@ const MUITable = () => {
         {id :3, firstName: "Birgül", lastName : "Demirden", age : 26},
     ]*/
 
-      const [rows, setRows] = useState([]);
+    const [rows, setRows] = useState([]);
+
+    useEffect(() => {
+      axios.get("https://api.ikkutusu.com.tr/api/QrCode")
+        .then((response) => {
+          setRows(response.data)
+        })
+        .catch((error) => {
+          console.log("veri çekme hatasi",error)
+        })
+    },[]);
+
   return (
     <div>
       <TableContainer>
