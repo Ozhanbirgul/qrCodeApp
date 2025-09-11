@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import CircularProgress from "@mui/material/CircularProgress"; //loading spinner için kullanılan component
 
 const MUITable = () => {
 
@@ -19,6 +20,7 @@ const MUITable = () => {
     ]*/
 
     const [rows, setRows] = useState([]);
+    const [loading, setLoading] = useState(true); // loading durumunu tutalım
 
     useEffect(() => {
       axios.get("https://api.ikkutusu.com.tr/api/QrCode")
