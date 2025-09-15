@@ -6,11 +6,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
 import CircularProgress from "@mui/material/CircularProgress"; //loading spinner için kullanılan component
 import Box from "@mui/material/Box";
+import api from "../api/axios";
 
 const MUITable = () => {
   const [rows, setRows] = useState([]);
@@ -18,8 +18,8 @@ const MUITable = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      axios
-        .get("https://api.ikkutusu.com.tr/api/QrCode")
+      api
+        .get("/QrCode")
         .then((response) => {
           setRows(response.data.result);
           setLoading(false);
