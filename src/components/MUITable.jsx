@@ -10,6 +10,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import CircularProgress from "@mui/material/CircularProgress"; //loading spinner için kullanılan component
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import api from "../api/axios";
 
 const MUITable = () => {
@@ -41,7 +42,13 @@ const MUITable = () => {
 
   return (
     <>
-      <h2 style={{ marginBottom: "5px", padding: "20px" }}>QR Kod Listesi</h2>
+      {/* Buton ekleyelim */}
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px", padding: "20px" }}>
+        <h2 style={{ marginBottom: "5px", padding: "20px" }}>QR Kod Listesi</h2>
+        <Button variant="contained">
+          Yeni QR Kod
+        </Button>
+      </Box>
       <Box
         component="section"
         sx={{ p:3 }}
