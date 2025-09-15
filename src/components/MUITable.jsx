@@ -61,7 +61,7 @@ const MUITable = () => {
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px", padding: "20px" }}>
         <h2 style={{ marginBottom: "5px", padding: "20px" }}>QR Kod Listesi</h2>
         <Button variant="contained" onClick={handleClickOpen}>
-          Yeni QR Kod
+          + QR Kod Oluştur
         </Button>
       </Box>
 
