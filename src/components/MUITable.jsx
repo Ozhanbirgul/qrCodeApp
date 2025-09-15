@@ -27,9 +27,9 @@ const MUITable = () => {
     setOpen(true);
   }
 
-  /* const handleClose = () => {
+  const handleClose = () => {
     setOpen(false);
-  } */
+  }
 
   useEffect(() => {
     setTimeout(() => {
@@ -56,13 +56,32 @@ const MUITable = () => {
 
   return (
     <>
-      {/* Buton ekleyelim */}
+      {/* Buton ve Başlık Alanı */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px", padding: "20px" }}>
         <h2 style={{ marginBottom: "5px", padding: "20px" }}>QR Kod Listesi</h2>
         <Button variant="contained" onClick={handleClickOpen}>
           Yeni QR Kod
         </Button>
       </Box>
+
+      {/* Dialog Alanı */}
+      <Dialog>
+        <DialogTitle>Yeni QR Kod Ekle</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Buradan yeni bir QR kod ekleyebilirsiniz.
+          </DialogContentText>
+
+          {/* Form inputları buraya gelecek. */}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>İptal</Button>
+          <Button onClick={handleClose}>Kaydet</Button>
+        </DialogActions>
+      </Dialog>
+
+
+      {/* Tablo Alanı */}
       <Box
         component="section"
         sx={{ p:3 }}
