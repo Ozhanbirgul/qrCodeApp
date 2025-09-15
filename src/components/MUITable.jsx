@@ -17,6 +17,7 @@ import {
   DialogActions
 } from "@mui/material";
 import api from "../api/axios";
+import QrCodeDialog from "./QrCodeDialog";
 
 const MUITable = () => {
   const [rows, setRows] = useState([]);
@@ -65,20 +66,7 @@ const MUITable = () => {
       </Box>
 
       {/* Dialog Alanı */}
-      <Dialog>
-        <DialogTitle>Yeni QR Kod Ekle</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Buradan yeni bir QR kod ekleyebilirsiniz.
-          </DialogContentText>
-
-          {/* Form inputları buraya gelecek. */}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>İptal</Button>
-          <Button onClick={handleClose}>Kaydet</Button>
-        </DialogActions>
-      </Dialog>
+      <QrCodeDialog open={open} handleClose={handleClose} />
 
 
       {/* Tablo Alanı */}
