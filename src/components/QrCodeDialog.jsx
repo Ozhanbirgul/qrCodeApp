@@ -13,6 +13,15 @@ import {
   TextField
 } from "@mui/material";
 
+//Schema tanımı
+const schema = z.object({
+  locatinName: z.string().min(1, "Lokasyon adı Zorunludur."),
+  useArea: z.string.min(1, "Kullanım alanı zorunlduur."),
+  latitude: z.string(1, "Enlem zorunludur."),
+  longitude: z.string().min(1, "Boylam zorunludur."),
+  description: z.string().optional()
+});
+
 const QrCodeDialog = ({open, handleClose}) => {
   return (
     <div>
