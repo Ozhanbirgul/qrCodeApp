@@ -1,21 +1,35 @@
-import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { useState } from "react";
-import { useEffect } from "react";
-import CircularProgress from "@mui/material/CircularProgress"; //loading spinner için kullanılan component
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import React, { useState, useEffect } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
+} from "@mui/material";
 import api from "../api/axios";
 
 const MUITable = () => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true); // loading durumunu tutalım
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  }
+
+  /* const handleClose = () => {
+    setOpen(false);
+  } */
 
   useEffect(() => {
     setTimeout(() => {
@@ -45,7 +59,7 @@ const MUITable = () => {
       {/* Buton ekleyelim */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px", padding: "20px" }}>
         <h2 style={{ marginBottom: "5px", padding: "20px" }}>QR Kod Listesi</h2>
-        <Button variant="contained">
+        <Button variant="contained" onClick={handleClickOpen}>
           Yeni QR Kod
         </Button>
       </Box>
