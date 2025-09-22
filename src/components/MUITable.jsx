@@ -16,8 +16,8 @@ import {
   DialogContentText,
   DialogActions
 } from "@mui/material";
-import api from "../api/axios";
 import QrCodeDialog from "./QrCodeDialog";
+import { getQrCodes } from "../services/qrCodeService";
 
 const MUITable = () => {
   const [rows, setRows] = useState([]);
@@ -32,7 +32,23 @@ const MUITable = () => {
     setOpen(false);
   }
 
+  const fetchData = () => {
+    setLoading(true);
+    getQrCodes()
+    .then((response) => {
+      setRows(response.data.result);
+    })
+    .catch((error) => {
+      alert("veri çekme hatasi", error.message);
+    })
+    .finally(() => setLoading(false)); // api çağrısı başarılı veya başarısız olsa da bu kod çalışr.
+  }
+
   useEffect(() => {
+    fetchData();
+  }, [])
+
+  /*useEffect(() => {
     setTimeout(() => {
       api
         .get("/QrCode")
@@ -46,6 +62,7 @@ const MUITable = () => {
         });
     }, 2000);
   }, []);
+  */
 
   if (loading) {
     return (
@@ -66,7 +83,7 @@ const MUITable = () => {
       </Box>
 
       {/* Dialog Alanı */}
-      <QrCodeDialog open={open} handleClose={handleClose} />
+      <QrCodeDialog open={open} handleClose={handleClose} onSuccess={fetchData}/>
 
 
       {/* Tablo Alanı */}

@@ -12,6 +12,7 @@ import {
   Box,
   TextField,
 } from "@mui/material";
+import { createQrCode } from "../services/qrCodeService";
 
 //Schema tanımı
 const schema = z.object({
@@ -22,7 +23,7 @@ const schema = z.object({
   description: z.string().optional(),
 });
 
-const QrCodeDialog = ({ open, handleClose }) => {
+const QrCodeDialog = ({ open, handleClose, onSuccess }) => {
   // useForm ile formu yönetelim
   const {
     register,
@@ -33,10 +34,15 @@ const QrCodeDialog = ({ open, handleClose }) => {
   });
 
   // Submit fonksiyonu
-  const onSubmit = (data) => {
-    console.log("Form verisi:", data);
-    // burada api.post("/QrCode/generate", data) yapabiliriz.
-    handleClose(); // form submitten sonra diaalog kapanır
+  const onSubmit = (data) => { //formdaki tüm input değerlerini içerir.
+    createQrCode(data) //yeni kod oluşturma işlemini başlatır
+    .then(() => {
+      onSuccess(); //tabloyu yeniler
+      handleClose(); //dialog'u kapatır
+    })
+    .catch((error) => {
+      alert("QR kod oluşturulamadı: " + error.message);
+    });
   };
 
   return (
