@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -14,25 +14,27 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogActions
+  DialogActions,
 } from "@mui/material";
 import QrCodeDialog from "./QrCodeDialog";
 import { getQrCodes } from "../services/qrCodeService";
+import {useQuery} from "@tanstack/react-query";
 
 const MUITable = () => {
-  const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true);
+  //const [rows, setRows] = useState([]);
+  //const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  }
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  const handleClose = () => {
-    setOpen(false);
-  }
+  // useQuery ile veri çekelim
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["qrCodes"],
+    queryFn: getQrCodes,
+  });
 
-  const fetchData = () => {
+  /*const fetchData = () => {
     setLoading(true);
     getQrCodes()
     .then((response) => {
@@ -47,8 +49,9 @@ const MUITable = () => {
   useEffect(() => {
     fetchData();
   }, [])
+  */
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div>
         <CircularProgress />
@@ -56,10 +59,22 @@ const MUITable = () => {
     );
   }
 
+  if (isError) {
+    return <div>Veriler alınırken bir hata oluştu.</div>;
+  }
+
   return (
     <>
       {/* Buton ve Başlık Alanı */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px", padding: "20px" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "5px",
+          padding: "20px",
+        }}
+      >
         <h2 style={{ marginBottom: "5px", padding: "20px" }}>QR Kod Listesi</h2>
         <Button variant="contained" onClick={handleClickOpen}>
           + QR Kod Oluştur
@@ -67,14 +82,14 @@ const MUITable = () => {
       </Box>
 
       {/* Dialog Alanı */}
-      <QrCodeDialog open={open} handleClose={handleClose} onSuccess={fetchData}/>
-
+      <QrCodeDialog
+        open={open}
+        handleClose={handleClose}
+        onSuccess={refetch}
+      />
 
       {/* Tablo Alanı */}
-      <Box
-        component="section"
-        sx={{ p:3 }}
-      >
+      <Box component="section" sx={{ p: 3 }}>
         <TableContainer component={Paper}>
           <Table stickyHeader>
             <TableHead>
@@ -88,11 +103,13 @@ const MUITable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <TableRow 
+              {data?.data?.result?.map((row) => (
+                <TableRow
                   key={row.id}
-                  sx={{ "&:nth-of-type(odd)": { backgroundColor: "action.hover" } }}
-                  >
+                  sx={{
+                    "&:nth-of-type(odd)": { backgroundColor: "action.hover" },
+                  }}
+                >
                   <TableCell>{row.id}</TableCell>
                   <TableCell>{row.locationName}</TableCell>
                   <TableCell>{row.latitude}</TableCell>
