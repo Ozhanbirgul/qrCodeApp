@@ -21,7 +21,7 @@ import { getQrCodes } from "../services/qrCodeService";
 
 const MUITable = () => {
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(true); // loading durumunu tutalım
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -47,22 +47,6 @@ const MUITable = () => {
   useEffect(() => {
     fetchData();
   }, [])
-
-  /*useEffect(() => {
-    setTimeout(() => {
-      api
-        .get("/QrCode")
-        .then((response) => {
-          setRows(response.data.result);
-          setLoading(false);
-        })
-        .catch((error) => {
-          alert("veri çekme hatasi", error.message);
-          setLoading(false);
-        });
-    }, 2000);
-  }, []);
-  */
 
   if (loading) {
     return (
