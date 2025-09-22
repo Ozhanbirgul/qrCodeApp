@@ -13,8 +13,9 @@ import {
   TextField,
 } from "@mui/material";
 import { createQrCode } from "../services/qrCodeService";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-//Schema tanımı
+//Schema tanımı --> formun validasyon kurallarını tanımlıyor.
 const schema = z.object({
   locationName: z.string().min(1, "Lokasyon adı Zorunludur."),
   useArea: z.string().min(1, "Kullanım alanı zorunlduur."),
@@ -23,26 +24,37 @@ const schema = z.object({
   description: z.string().optional(),
 });
 
-const QrCodeDialog = ({ open, handleClose, onSuccess }) => {
-  // useForm ile formu yönetelim
+const QrCodeDialog = ({ open, handleClose }) => {
+  const queryClient = useQueryClient();
+
+  // useForm ile form yönetimi
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: zodResolver(schema),
   });
 
+  // Mutation: QR kod oluşturma
+  const mutation = useMutation({
+    mutationFn: createQrCode,
+    onSuccess: () => {
+      //tabloyu güncellemek için cache'i invalide et
+      queryClient.invalidateQueries(["qrCodes"]);
+      handleClose(); //dialog'u kapat
+      reset(); // formu sıfırla
+    },
+    onError: (error) => {
+      alert("qr kod oluşturulamadı:" + error.message);
+    },
+  });
+
   // Submit fonksiyonu
-  const onSubmit = (data) => { //formdaki tüm input değerlerini içerir.
-    createQrCode(data) //yeni kod oluşturma işlemini başlatır
-    .then(() => {
-      onSuccess(); //tabloyu yeniler
-      handleClose(); //dialog'u kapatır
-    })
-    .catch((error) => {
-      alert("QR kod oluşturulamadı: " + error.message);
-    });
+  const onSubmit = (data) => {
+    //formdaki tüm input değerlerini içerir.
+    mutation.mutate(data);
   };
 
   return (
@@ -106,7 +118,7 @@ const QrCodeDialog = ({ open, handleClose, onSuccess }) => {
             <DialogActions>
               <Button onClick={handleClose}>Kapat</Button>
               <Button type="submit" variant="contained">
-                Oluştur
+                {mutation.isLoading ? "Oluşturuluyor..." : "Oluştur"}
               </Button>
             </DialogActions>
           </form>
