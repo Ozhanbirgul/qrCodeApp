@@ -17,51 +17,26 @@ import {
   DialogActions,
 } from "@mui/material";
 import QrCodeDialog from "./QrCodeDialog";
-import { getQrCodes } from "../services/qrCodeService";
-import {useQuery} from "@tanstack/react-query";
+import { useQrCodes } from "../queries/qrCodeQueries";
 
 const MUITable = () => {
-  //const [rows, setRows] = useState([]);
-  //const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   // useQuery ile veri çekelim
-  const { data, isLoading, isError, refetch } = useQuery({
-    queryKey: ["qrCodes"],
-    queryFn: getQrCodes,
-  });
-
-  /*const fetchData = () => {
-    setLoading(true);
-    getQrCodes()
-    .then((response) => {
-      setRows(response.data.result);
-    })
-    .catch((error) => {
-      alert("veri çekme hatasi", error.message);
-    })
-    .finally(() => setLoading(false)); // api çağrısı başarılı veya başarısız olsa da bu kod çalışr.
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, [])
-  */
+  const { data, isLoading, isError, refetch } = useQrCodes();
 
   if (isLoading) {
-    return (
-      <div>
-        <CircularProgress />
-      </div>
-    );
+    return <CircularProgress />;
   }
 
   if (isError) {
     return <div>Veriler alınırken bir hata oluştu.</div>;
   }
+
+  const rows = data?.result || []; // artık queries dosyası response.data döndürüyor
 
   return (
     <>
@@ -82,11 +57,7 @@ const MUITable = () => {
       </Box>
 
       {/* Dialog Alanı */}
-      <QrCodeDialog
-        open={open}
-        handleClose={handleClose}
-        onSuccess={refetch}
-      />
+      <QrCodeDialog open={open} handleClose={handleClose} onSuccess={refetch} />
 
       {/* Tablo Alanı */}
       <Box component="section" sx={{ p: 3 }}>
@@ -103,7 +74,7 @@ const MUITable = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data?.data?.result?.map((row) => (
+              {rows.map((row) => (
                 <TableRow
                   key={row.id}
                   sx={{
