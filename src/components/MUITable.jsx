@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Table,
   TableBody,
@@ -10,6 +12,7 @@ import {
   CircularProgress,
   Box,
   Button,
+  Stack,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -21,9 +24,9 @@ import { useQrCodes } from "../queries/qrCodeQueries";
 
 const MUITable = () => {
   const [open, setOpen] = useState(false);
+  const [editQr, setEditQr] = useState(null);
 
   const handleClickOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   // useQuery ile veri çekelim
   const { data, isLoading, isError, refetch } = useQrCodes();
@@ -37,6 +40,20 @@ const MUITable = () => {
   }
 
   const rows = data?.result || []; // artık queries dosyası response.data döndürüyor
+
+  const handleEdit = (row) => {
+    setEditQr(row); //seçilen QR verisini state'e atıyoruz.
+  };
+
+  const handleDelete = (id) => {
+    // burada useDeleteQrCode mutation çağıracağız
+    console.log("Silinecek id:", id);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setEditQr(null);
+  };
 
   return (
     <>
@@ -57,7 +74,13 @@ const MUITable = () => {
       </Box>
 
       {/* Dialog Alanı */}
-      <QrCodeDialog open={open} handleClose={handleClose} onSuccess={refetch} />
+      <QrCodeDialog
+        open={open || Boolean(editQr)}
+        handleClose={handleClose}
+        initialData={editQr}
+        mode={editQr ? "edit" : "create"}
+        onSuccess={refetch}
+      />
 
       {/* Tablo Alanı */}
       <Box component="section" sx={{ p: 3 }}>
@@ -88,6 +111,32 @@ const MUITable = () => {
                   <TableCell>{row.longitude}</TableCell>
                   <TableCell>{row.useArea}</TableCell>
                   <TableCell>{row.description}</TableCell>
+                  <TableCell>
+                    <Stack
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={1}
+                    >
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => handleEdit(row)}
+                        sx={{ minWidth: "auto", padding: "4px" }}
+                      >
+                        <EditIcon fontSize="small" />
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        onClick={() => handleDelete(row.id)}
+                        sx={{ minWidth: "auto", padding: "4px" }}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </Stack>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

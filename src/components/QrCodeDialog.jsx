@@ -13,6 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useCreateQrCode } from "../queries/qrCodeQueries";
+import { useEffect } from "react";
 
 
 //Schema tanımı --> formun validasyon kurallarını tanımlıyor.
@@ -24,7 +25,7 @@ const schema = z.object({
   description: z.string().optional(),
 });
 
-const QrCodeDialog = ({ open, handleClose }) => {
+const QrCodeDialog = ({ open, handleClose, initialData }) => {
   const {mutate, isLoading} = useCreateQrCode();
 
   // useForm ile form yönetimi
@@ -35,7 +36,15 @@ const QrCodeDialog = ({ open, handleClose }) => {
     reset,
   } = useForm({
     resolver: zodResolver(schema),
+    defaultValues: initialData || {}
   });
+
+  // initialData değişirse formu resetle
+  useEffect(() => {
+    if(initialData) {
+      reset(initialData)
+    }
+  }, [initialData, reset])
 
   // Submit fonksiyonu
   const onSubmit = (data) => {
