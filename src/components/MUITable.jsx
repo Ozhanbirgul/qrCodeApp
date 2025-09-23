@@ -71,6 +71,7 @@ const MUITable = () => {
                 <TableCell>BOYLAM</TableCell>
                 <TableCell>KULLANIM ALANI</TableCell>
                 <TableCell>AÇIKLAMA</TableCell>
+                <TableCell>İŞLEMLER</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

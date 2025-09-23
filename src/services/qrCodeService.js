@@ -21,3 +21,14 @@ export const createQrCode = async (data) => {
         throw error; // useMutation içinde yakalnacak
     }
 }
+
+// Qr kodunu günceller
+export const updateQrCode = async (id, data) => {
+    try {
+        const res = await api.put(`/QrCode/${id}`, data);
+        return res.data;
+    } catch (error) {
+        console.error("Qr kod güncelleme hatası:", error);
+        throw error;
+    }
+}

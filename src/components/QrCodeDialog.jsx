@@ -12,8 +12,8 @@ import {
   Box,
   TextField,
 } from "@mui/material";
-import { createQrCode } from "../services/qrCodeService";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCreateQrCode } from "../queries/qrCodeQueries";
+
 
 //Schema tanımı --> formun validasyon kurallarını tanımlıyor.
 const schema = z.object({
@@ -25,7 +25,7 @@ const schema = z.object({
 });
 
 const QrCodeDialog = ({ open, handleClose }) => {
-  const queryClient = useQueryClient();
+  const {mutate, isLoading} = useCreateQrCode();
 
   // useForm ile form yönetimi
   const {
@@ -37,24 +37,18 @@ const QrCodeDialog = ({ open, handleClose }) => {
     resolver: zodResolver(schema),
   });
 
-  // Mutation: QR kod oluşturma
-  const mutation = useMutation({
-    mutationFn: createQrCode,
-    onSuccess: () => {
-      //tabloyu güncellemek için cache'i invalide et
-      queryClient.invalidateQueries(["qrCodes"]);
-      handleClose(); //dialog'u kapat
-      reset(); // formu sıfırla
-    },
-    onError: (error) => {
-      alert("qr kod oluşturulamadı:" + error.message);
-    },
-  });
-
   // Submit fonksiyonu
   const onSubmit = (data) => {
-    //formdaki tüm input değerlerini içerir.
-    mutation.mutate(data);
+    mutate(data, {
+      onSuccess: () => {
+        alert("Qr başarıyla oluşturuldu!")
+        handleClose();
+        reset();
+      },
+      onError: (err) => {
+        alert("Qr kod oluşturulamadı: " + err.message)
+      }
+    })
   };
 
   return (
@@ -82,6 +76,7 @@ const QrCodeDialog = ({ open, handleClose }) => {
                 variant="outlined"
                 {...register("useArea")}
                 sx={{ mb: 2 }}
+                error={!!errors.useArea}
                 helperText={errors.useArea?.message}
               />
 
@@ -118,7 +113,7 @@ const QrCodeDialog = ({ open, handleClose }) => {
             <DialogActions>
               <Button onClick={handleClose}>Kapat</Button>
               <Button type="submit" variant="contained">
-                {mutation.isLoading ? "Oluşturuluyor..." : "Oluştur"}
+                {isLoading ? "Oluşturuluyor..." : "Oluştur"}
               </Button>
             </DialogActions>
           </form>
