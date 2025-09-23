@@ -15,7 +15,6 @@ import {
 import { useCreateQrCode } from "../queries/qrCodeQueries";
 import { useEffect } from "react";
 
-
 //Schema tanımı --> formun validasyon kurallarını tanımlıyor.
 const schema = z.object({
   locationName: z.string().min(1, "Lokasyon adı Zorunludur."),
@@ -25,8 +24,8 @@ const schema = z.object({
   description: z.string().optional(),
 });
 
-const QrCodeDialog = ({ open, handleClose, initialData }) => {
-  const {mutate, isLoading} = useCreateQrCode();
+const QrCodeDialog = ({ open, handleClose, initialData, mode }) => {
+  const { mutate, isLoading } = useCreateQrCode();
 
   // useForm ile form yönetimi
   const {
@@ -36,28 +35,28 @@ const QrCodeDialog = ({ open, handleClose, initialData }) => {
     reset,
   } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: initialData || {}
+    defaultValues: initialData || {},
   });
 
   // initialData değişirse formu resetle
   useEffect(() => {
-    if(initialData) {
-      reset(initialData)
+    if (initialData) {
+      reset(initialData);
     }
-  }, [initialData, reset])
+  }, [initialData, reset]);
 
   // Submit fonksiyonu
   const onSubmit = (data) => {
     mutate(data, {
       onSuccess: () => {
-        alert("Qr başarıyla oluşturuldu!")
+        alert("Qr başarıyla oluşturuldu!");
         handleClose();
         reset();
       },
       onError: (err) => {
-        alert("Qr kod oluşturulamadı: " + err.message)
-      }
-    })
+        alert("Qr kod oluşturulamadı: " + err.message);
+      },
+    });
   };
 
   return (
@@ -122,7 +121,13 @@ const QrCodeDialog = ({ open, handleClose, initialData }) => {
             <DialogActions>
               <Button onClick={handleClose}>Kapat</Button>
               <Button type="submit" variant="contained">
-                {isLoading ? "Oluşturuluyor..." : "Oluştur"}
+                {isLoading
+                  ? mode === "edit"
+                    ? "Güncelleniyor..."
+                    : "Oluşturuluyor..."
+                  : mode === "edit"
+                  ? "Güncelle"
+                  : "Oluştur"}
               </Button>
             </DialogActions>
           </form>
