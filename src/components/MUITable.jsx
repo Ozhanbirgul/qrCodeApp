@@ -20,13 +20,34 @@ import {
   DialogActions,
 } from "@mui/material";
 import QrCodeDialog from "./QrCodeDialog";
-import { useQrCodes } from "../queries/qrCodeQueries";
+import { useDeleteQrCode, useQrCodes } from "../queries/qrCodeQueries";
+import { Checkbox } from "@mui/material";
 
 const MUITable = () => {
   const [open, setOpen] = useState(false);
   const [editQr, setEditQr] = useState(null);
+  // Çoklu silme için seçim state'i
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [selectionMode, setSelectionMode] = useState(false);
+
+  // Checkbox seçimi
+  const handleSelect = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  // Tümünü seç / kaldır
+  const handleSelectAll = () => {
+    if (selectedIds.length === rows.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(rows.map((row) => row.id));
+    }
+  };
 
   const handleClickOpen = () => setOpen(true);
+  const { mutate: deleteQr } = useDeleteQrCode();
 
   // useQuery ile veri çekelim
   const { data, isLoading, isError, refetch } = useQrCodes();
@@ -46,9 +67,37 @@ const MUITable = () => {
   };
 
   const handleDelete = (id) => {
-    // burada useDeleteQrCode mutation çağıracağız
-    console.log("Silinecek id:", id);
+    if (window.confirm("Bu Qr kodunu silmek istediğinizden emin misiniz?")) {
+      deleteQr(id, {
+        onSuccess: () => {
+          alert("QR kod silindi!");
+          refetch(); // tablonun yenilenmesi için
+        },
+        onError: (err) => {
+          console.error("Silme hatası: ", err.response);
+          alert("Silme işlemi başarısız: " + err.message);
+        },
+      });
+    }
   };
+
+  const handleDeleteSelected = () => {
+  if(window.confirm("Seçili QR kodlarını silmek istediğinizden emin misiniz?")) {
+    selectedIds.forEach((id) => {
+      deleteQr(id, {
+        onSuccess: () => {
+          refetch(); // Tablonun güncellenmesi
+        },
+        onError: (err) => {
+          console.error("Silme hatası:", err);
+        }
+      });
+    });
+    setSelectedIds([]); // seçimleri temizle
+    setSelectionMode(false); // seçim modunu kapat
+  }
+};
+
 
   const handleClose = () => {
     setOpen(false);
@@ -68,6 +117,26 @@ const MUITable = () => {
         }}
       >
         <h2 style={{ marginBottom: "5px", padding: "20px" }}>QR Kod Listesi</h2>
+        <Box>
+          {selectionMode && selectedIds.length > 0 && (
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleDeleteSelected}
+              sx={{ ml: 2 }}
+            >
+              Seçilenleri Sil
+            </Button>
+          )}
+
+          <Button
+            variant="outlined"
+            sx={{ mr: 2 }}
+            onClick={() => setSelectionMode(!selectionMode)}
+          >
+            Çoklu Seçim
+          </Button>
+        </Box>
         <Button variant="contained" onClick={handleClickOpen}>
           + QR Kod Oluştur
         </Button>
@@ -88,6 +157,20 @@ const MUITable = () => {
           <Table stickyHeader>
             <TableHead>
               <TableRow style={{ background: "lightgrey" }}>
+                <TableCell padding="checkbox">
+                  {selectionMode && (
+                    <Checkbox
+                      indeterminate={
+                        selectedIds.length > 0 &&
+                        selectedIds.length < rows.length
+                      }
+                      checked={
+                        rows.length > 0 && selectedIds.length === rows.length
+                      }
+                      onChange={handleSelectAll}
+                    />
+                  )}
+                </TableCell>
                 <TableCell>ID</TableCell>
                 <TableCell>LOKASYON ADI</TableCell>
                 <TableCell>ENLEM</TableCell>
@@ -105,6 +188,14 @@ const MUITable = () => {
                     "&:nth-of-type(odd)": { backgroundColor: "action.hover" },
                   }}
                 >
+                  <TableCell padding="checkbox">
+                    {selectionMode && (
+                      <Checkbox
+                        checked={selectedIds.includes(row.id)}
+                        onChange={() => handleSelect(row.id)}
+                      />
+                    )}
+                  </TableCell>
                   <TableCell>{row.id}</TableCell>
                   <TableCell>{row.locationName}</TableCell>
                   <TableCell>{row.latitude}</TableCell>

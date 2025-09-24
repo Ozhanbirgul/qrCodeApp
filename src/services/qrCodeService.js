@@ -32,3 +32,14 @@ export const updateQrCode = async (id, data) => {
         throw error;
     }
 }
+
+// Qr kodunu Siler
+export const deleteQrCode = async (id) => {
+    try {
+        const res = await api.delete(`/api/QrCode/${id}`);
+        return res.data;
+    } catch (error) {
+        console.error("Qr kod silme hatası:", error);
+        throw error;
+    }
+}

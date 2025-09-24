@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getQrCodes } from "../services/qrCodeService";
+import { deleteQrCode, getQrCodes } from "../services/qrCodeService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createQrCode } from "../services/qrCodeService";
 import { updateQrCode } from "../services/qrCodeService";
@@ -57,4 +57,15 @@ export const useUpdateQrCode = () => {
             console.error("updateQrCode error:", err)
         }
     })
+}
+
+
+/*
+ * Silme: useDeleteQrCode
+ */
+
+export const useDeleteQrCode = () => {
+  return useMutation({
+    mutationFn: (id) => deleteQrCode(id),
+  })
 }
