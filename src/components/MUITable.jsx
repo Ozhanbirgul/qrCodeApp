@@ -22,6 +22,7 @@ import {
 import QrCodeDialog from "./QrCodeDialog";
 import { useDeleteQrCode, useQrCodes } from "../queries/qrCodeQueries";
 import { Checkbox } from "@mui/material";
+import Header from "./Header"
 
 const MUITable = () => {
   const [open, setOpen] = useState(false);
@@ -30,6 +31,7 @@ const MUITable = () => {
   const [selectedIds, setSelectedIds] = useState([]);
   const [selectionMode, setSelectionMode] = useState(false);
 
+  
   // Checkbox seçimi
   const handleSelect = (id) => {
     setSelectedIds((prev) =>
@@ -140,6 +142,8 @@ const MUITable = () => {
         <Button variant="contained" onClick={handleClickOpen}>
           + QR Kod Oluştur
         </Button>
+
+        <Header />
       </Box>
 
       {/* Dialog Alanı */}
