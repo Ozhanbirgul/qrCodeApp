@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { deleteQrCode, getQrCodes } from "../services/qrCodeService";
+import { deleteQrCode } from "../services/qrCodeService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createQrCode } from "../services/qrCodeService";
 import { updateQrCode } from "../services/qrCodeService";
+import api from "../api/axios";
+
+
 /*
  * Listeleme: useQrCodes
  * - return: { data, isLoading, isError, refetch, ... }
@@ -13,13 +16,13 @@ export const useQrCodes = () => {
   return useQuery({
     queryKey: ["qrCodes"],
     queryFn: async () => {
-      const res = await getQrCodes();
+      const res = await api.get("/posts");
       // Eğer servis fonksiyonun "axios response" (response) döndürüyor ise:
       // return res.data
       // Eğer servis fonksiyonun zaten response.data döndürüyor ise:
       // return res
       // Aşağıdaki ifade her iki durumu da güvenli şekilde kapsar:
-      return res?.data ?? res;
+      return res.data;
     },
   });
 };

@@ -62,7 +62,7 @@ const MUITable = () => {
     return <div>Veriler alınırken bir hata oluştu.</div>;
   }
 
-  const rows = data?.result || []; // artık queries dosyası response.data döndürüyor
+  const rows = (data || []).slice(0, 10); // artık queries dosyası response.data döndürüyor
 
   const handleEdit = (row) => {
     setEditQr(row); //seçilen QR verisini state'e atıyoruz.
@@ -176,12 +176,9 @@ const MUITable = () => {
                   )}
                 </TableCell>
                 <TableCell>ID</TableCell>
-                <TableCell>LOKASYON ADI</TableCell>
-                <TableCell>ENLEM</TableCell>
-                <TableCell>BOYLAM</TableCell>
-                <TableCell>KULLANIM ALANI</TableCell>
-                <TableCell>AÇIKLAMA</TableCell>
-                <TableCell>İŞLEMLER</TableCell>
+                <TableCell>TITLE</TableCell>
+                <TableCell>BODY</TableCell>
+                <TableCell>USERID</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -201,11 +198,9 @@ const MUITable = () => {
                     )}
                   </TableCell>
                   <TableCell>{row.id}</TableCell>
-                  <TableCell>{row.locationName}</TableCell>
-                  <TableCell>{row.latitude}</TableCell>
-                  <TableCell>{row.longitude}</TableCell>
-                  <TableCell>{row.useArea}</TableCell>
-                  <TableCell>{row.description}</TableCell>
+                  <TableCell>{row.title}</TableCell>
+                  <TableCell>{row.body}</TableCell>
+                  <TableCell>{row.userId}</TableCell>
                   <TableCell>
                     <Stack
                       direction="row"
